@@ -34,11 +34,11 @@
 // using a Uniform Buffer. These parameters should yield a stable and pleasing simulation for an
 // implementation based off the code here: http://studio.sketchpad.cc/sp/pad/view/ro.9cbgCRcgbPOI6/rev.23
 #define RULE1DISTANCE 0.1f // cohesion
-#define RULE2DISTANCE 0.05f // separation
-#define RULE3DISTANCE 0.05f // alignment
+#define RULE2DISTANCE 0.025f // separation
+#define RULE3DISTANCE 0.025f // alignment
 #define RULE1SCALE 0.02f
 #define RULE2SCALE 0.05f
-#define RULE3SCALE 0.01f
+#define RULE3SCALE 0.005f
 
 class VulkanExample : public VulkanExampleBase
 {

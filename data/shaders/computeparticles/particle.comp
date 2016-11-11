@@ -50,13 +50,47 @@ void main()
 
     // Current SSBO index
     uint index = gl_GlobalInvocationID.x;
-	// Don't try to write beyond particle count
+		// Don't try to write beyond particle count
     if (index >= ubo.particleCount)
 		return;
 
     // Read position and velocity
 		vec2 vPos = particlesA[index].pos.xy;
     vec2 vVel = particlesA[index].vel.xy;
+
+		vec2 cMass = vec2(0.0, 0.0);
+		vec2 cVel = vec2(0.0, 0.0);
+		vec2 colVel = vec2(0.0, 0.0);
+		int cMassCount = 0;
+		int cVelCount = 0;
+
+		vec2 pos;
+		vec2 vel;
+		for (int i = 0; i < ubo.particleCount; ++i) {
+			if (i == index) continue;
+			pos = particlesA[i].pos.xy;
+			vel = particlesA[i].vel.xy;
+
+			if (distance(pos, vPos) < ubo.rule1Distance) {
+				cMass += pos;
+				cMassCount++;
+			}
+			if (distance(pos, vPos) < ubo.rule2Distance) {
+				colVel -= (pos - vPos);
+			}
+			if (distance(pos, vPos) < ubo.rule3Distance) {
+				cVel += vel;
+				cVelCount++;
+			}
+		}
+		if (cMassCount > 0) {
+			cMass = cMass / cMassCount - vPos;
+		}
+		if (cVelCount > 0) {
+			cVel = cVel / cVelCount;
+		}
+
+		vVel += cMass * ubo.rule1Scale + colVel * ubo.rule2Scale + cVel * ubo.rule3Scale;
 
 		// clamp velocity for a more pleasing simulation.
 		vVel = normalize(vVel) * clamp(length(vVel), 0.0, 0.1);
